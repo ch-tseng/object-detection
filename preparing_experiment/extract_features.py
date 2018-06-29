@@ -48,8 +48,10 @@ for (i, trnPath) in enumerate(trnPaths):
 	# load the image, convert it to grayscale, and extract the image ID from the path
 	filepath, filename = os.path.split(trnPath)
 	file_name, file_extension = os.path.splitext(filename)
-
+	print("TEST:", trnPath)
 	image = cv2.imread(trnPath)
+	#cv2.imshow("TEST", image)
+	#cv2.waitKey(10000)
 	image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
 	if(args["type"]=="mat"):
@@ -61,8 +63,20 @@ for (i, trnPath) in enumerate(trnPaths):
 
 		p = "{}/annotation_{}.mat".format(conf["image_annotations"], imageID)
 		bb = io.loadmat(p)["box_coord"][0]
-		print(bb)
 		roi = helpers.crop_ct101_bb(image, bb, padding=conf["offset"], dstSize=tuple(conf["window_dim"]))
+
+		# define the list of ROIs that will be described, based on whether or not the
+		# horizontal flip of the image should be used
+		rois = (roi, cv2.flip(roi, 1)) if conf["use_flip"] else (roi,)
+
+		# loop over the ROIs
+		for roi in rois:
+			# extract features from the ROI and update the list of features and labels
+			features = hog.describe(roi)
+			data.append(features)
+			labels.append(1)
+			# update the progress bar
+			pbar.update(i)
 
 	else:
 		if(file_extension==".jpg"):
@@ -101,22 +115,21 @@ for (i, trnPath) in enumerate(trnPaths):
 		for i in range(0, len(labelName)):
 			if(args["name"]=='' or args["name"]==labelName[i]):
 				bb = [labelYstart[i], labelH[i]-labelYstart[i], labelXstart[i], labelW[i]-labelXstart[i]]
-				print(bb)
 				roi = helpers.crop_ct101_bb(image, bb, padding=conf["offset"], dstSize=tuple(conf["window_dim"]))
 
-	# define the list of ROIs that will be described, based on whether or not the
-	# horizontal flip of the image should be used
-	rois = (roi, cv2.flip(roi, 1)) if conf["use_flip"] else (roi,)
+				# define the list of ROIs that will be described, based on whether or not the
+				# horizontal flip of the image should be used
+				rois = (roi, cv2.flip(roi, 1)) if conf["use_flip"] else (roi,)
 
-	# loop over the ROIs
-	for roi in rois:
-		# extract features from the ROI and update the list of features and labels
-		features = hog.describe(roi)
-		data.append(features)
-		labels.append(1)
+				# loop over the ROIs
+				for roi in rois:
+					# extract features from the ROI and update the list of features and labels
+					features = hog.describe(roi)
+					data.append(features)
+					labels.append(1)
 
-	# update the progress bar
-	pbar.update(i)
+				# update the progress bar
+				pbar.update(i)
 
 # grab the distraction image paths and reset the progress bar
 pbar.finish()

@@ -7,17 +7,19 @@ def crop_ct101_bb(image, bb, padding=10, dstSize=(32, 32)):
 	# the supplied offset
 	(y, h, x, w) = bb
 	(x, y) = (max(x - padding, 0), max(y - padding, 0))
-	print("TEST: dstSize:{} ___ y:{}, h:{}, x:{}, w:{}, padding:{}".format(dstSize, y, h, x, w, padding))
-
-	roi = image[y:h + padding, x:w + padding]
-	print(image.shape)
-	print(roi.shape)
-	cv2.imshow("test", roi)
-	cv2.waitKey(10000)
+	(endx, endy) = (min(x+w+padding, x+w), min(y+h+padding, y+h))
+	#print("TEST: dstSize:{} ___ y:{}, h:{}, x:{}, w:{}, padding:{}".format(dstSize, y, h, x, w, padding))
+	print(y, endy, x, endx)
+	#roi = image[y:h + padding, x:w + padding]
+	roi = image[y:endy, x:endx]
+	#print(image.shape)
+	#print(roi.shape)
+	#cv2.imshow("test", roi)
+	#cv2.waitKey(10000)
 	
 	# resize the ROI to the desired destination size
-	print("TEST: {} ___ {}:{},{}:{}".format(dstSize, y, h+padding, x, w+padding))
-	print(roi.shape)
+	#print("TEST: {} ___ {}:{},{}:{}".format(dstSize, y, h+padding, x, w+padding))
+	#print(roi.shape)
 	roi = cv2.resize(roi, dstSize, interpolation=cv2.INTER_AREA)
 
 	# return the ROI
