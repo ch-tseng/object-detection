@@ -2,14 +2,14 @@
 	/****
 	* DATASET PATHS
 	****/
-	"image_dataset": "../datasets/head/images",
-	"image_annotations": "../datasets/head/labels",
-	"image_distractions": "../datasets/sceneclass13",
+        "image_dataset": "../datasets/head/images",
+        "image_annotations": "../datasets/head/labels",
+        "image_distractions": "../datasets/sceneclass13",
 
 	/****
 	* FEATURE EXTRACTION
 	****/
-	"features_path": "output/cars/car_features.hdf5",
+	"features_path": "output/head/head_features.hdf5",
 	"percent_gt_images": 0.5,
 	"offset": 5,
 	"use_flip": true,
@@ -30,7 +30,7 @@
 	"window_step": 4,
 	"overlap_thresh": 0.3,
 	"pyramid_scale": 1.5,
-	"window_dim": [96, 32],
+	"window_dim": [196, 204],
 	"min_probability": 0.7,
 
 	/****
