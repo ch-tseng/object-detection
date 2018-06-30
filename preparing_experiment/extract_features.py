@@ -48,7 +48,6 @@ for (i, trnPath) in enumerate(trnPaths):
 	# load the image, convert it to grayscale, and extract the image ID from the path
 	filepath, filename = os.path.split(trnPath)
 	file_name, file_extension = os.path.splitext(filename)
-	print("TEST:", trnPath)
 	image = cv2.imread(trnPath)
 	#cv2.imshow("TEST", image)
 	#cv2.waitKey(10000)
@@ -114,7 +113,8 @@ for (i, trnPath) in enumerate(trnPaths):
 
 		for i in range(0, len(labelName)):
 			if(args["name"]=='' or args["name"]==labelName[i]):
-				bb = [labelYstart[i], labelH[i]-labelYstart[i], labelXstart[i], labelW[i]-labelXstart[i]]
+				#bb = [labelYstart[i], labelH[i]+labelYstart[i], labelXstart[i], labelW[i]+labelXstart[i]]
+				bb = [labelYstart[i], labelH[i], labelXstart[i], labelW[i]]
 				roi = helpers.crop_ct101_bb(image, bb, padding=conf["offset"], dstSize=tuple(conf["window_dim"]))
 
 				# define the list of ROIs that will be described, based on whether or not the
@@ -141,6 +141,7 @@ print("[INFO] describing distraction ROIs...")
 for i in np.arange(0, conf["num_distraction_images"]):
 	# randomly select a distraction images, load it, convert it to grayscale, and
 	# then extract random pathces from the image
+	print(dstPaths)
 	image = cv2.imread(random.choice(dstPaths))
 	image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	patches = extract_patches_2d(image, tuple(conf["window_dim"]),

@@ -7,11 +7,11 @@ def crop_ct101_bb(image, bb, padding=10, dstSize=(32, 32)):
 	# the supplied offset
 	(y, h, x, w) = bb
 	(x, y) = (max(x - padding, 0), max(y - padding, 0))
-	(endx, endy) = (min(x+w+padding, x+w), min(y+h+padding, y+h))
+	#   (endx, endy) = (min(x+padding, x+w), min(y+padding, y+h))
 	#print("TEST: dstSize:{} ___ y:{}, h:{}, x:{}, w:{}, padding:{}".format(dstSize, y, h, x, w, padding))
-	print(y, endy, x, endx)
-	#roi = image[y:h + padding, x:w + padding]
-	roi = image[y:endy, x:endx]
+	#print(y, endy, x, endx)
+	roi = image[y:h + padding, x:w + padding]
+	#   roi = image[y:endy, x:endx]
 	#print(image.shape)
 	#print(roi.shape)
 	#cv2.imshow("test", roi)
